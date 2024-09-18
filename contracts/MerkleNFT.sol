@@ -7,7 +7,7 @@ import "./interfaces/IERC20.sol";
 import "./interfaces/IERC721.sol";
 
 
-contract MerkleAirdrop {
+contract MerkleAirdropWithNFT {
     address public tokenAddress;
     bytes32 public merkleRoot;
     address public owner;
