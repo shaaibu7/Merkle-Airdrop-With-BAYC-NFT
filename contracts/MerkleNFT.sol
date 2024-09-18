@@ -4,12 +4,15 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "solmate/src/utils/MerkleProofLib.sol";
 import "./interfaces/IERC20.sol";
+import "./interfaces/IERC721.sol";
 
 
 contract MerkleAirdrop {
     address public tokenAddress;
     bytes32 public merkleRoot;
     address public owner;
+
+    address BoredApeYatchClubNFTContractAddress = 0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D;
 
     constructor (address _tokenAddress, bytes32 _merkleRoot) {
         tokenAddress = _tokenAddress;
@@ -34,12 +37,15 @@ contract MerkleAirdrop {
         // verifying userAddress and amount to make sure it is part of the merkle tree
         bytes32 leaf = keccak256(abi.encodePacked(userAddress, amount));
         confirm_ = MerkleProofLib.verify(merkleRootProof, merkleRoot, leaf);
+        uint256 userNft = IERC721(BoredApeYatchClubNFTContractAddress).balanceOf(msg.sender);
 
         if (confirm_) {
-            claimedAirdrop[userAddress] = true;
-            IERC20(tokenAddress).transfer(userAddress, amount);
-            emit airdropClaimedSuccessfully(userAddress, amount);
+            if(userNft > 0) {
+                claimedAirdrop[userAddress] = true;
+                IERC20(tokenAddress).transfer(userAddress, amount);
+                emit airdropClaimedSuccessfully(userAddress, amount);
             
+            }
         }
 
     }
