@@ -20,25 +20,26 @@ describe("MerkleAirdropWithNFT", function () {
   //   return { token };
   // }
 
-  async function MerkleAirdropWithNFT() {
+  async function deployMerkleAirdropWithNFT() {
     // Contracts are deployed using the first signer/account by default
     const [owner, otherAccount] = await hre.ethers.getSigners();
     const TOKEN_ADDRESS = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D";
-    const MERKLE_ROOT = [
-      "0x0690c772cb276d8f2155fc3d9ecbd681254716a697b310f5992260397813517b",
-      "0xd975aff035182e40b4edd7987a2c2155b779745b7a750040ac88e632c7b88d05"
-    ];
+    const MERKLE_ROOT = "0x7f131dc43ab381310ccf5bc48d21adc8a814e10c7d3b6c19780a05a21ab41a2c";
+
+    const merkleBytes32 = ethers.hexlify(ethers.randomBytes(32));
 
 
     const MerkleAirdropWithNFTContract = await hre.ethers.getContractFactory("MerkleAirdropWithNFT");
-    const MerkleAirdropWithNFT = await MerkleAirdropWithNFTContract.deploy(TOKEN_ADDRESS);
+    const MerkleAirdropWithNFT = await MerkleAirdropWithNFTContract.deploy(TOKEN_ADDRESS, MERKLE_ROOT);
 
     return { MerkleAirdropWithNFT, owner };
   }
 
-  describe("Deployment", function () {
+  describe("Tsting Deployment", function () {
     it("Should check if owner is correct", async function () {
-      
+      const { MerkleAirdropWithNFT, owner } = await loadFixture(deployMerkleAirdropWithNFT);
+
+      expect(await MerkleAirdropWithNFT.owner()).to.eq(owner);
     });
 
     
